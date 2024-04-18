@@ -26,7 +26,7 @@ try {
     const consolePath = path.resolve('./dependencies/java/portugol/portugol-console.jar');
     await fs.writeFile(tempPath, code);
 
-    const cp = spawn('java', [
+    const cp = spawn('C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', [
         '-Dfile.encoding=latin1',
         '-server',
         '-Xms32m',
@@ -34,7 +34,6 @@ try {
         '-XX:MinHeapFreeRatio=5',
         '-XX:MaxHeapFreeRatio=10',
         '-XX:+UseG1GC',
-        '-XX:+CMSClassUnloadingEnabled',
         '-Dvisualvm.display.name=Portugol-Studio',
         '-jar',
         consolePath,
@@ -48,7 +47,10 @@ try {
     await timeout(new Promise((resolve, reject) => {
         cp.stdin.write(inputs.join('\n')+ '\n\n');
 
+        
+
         cp.stdout.on('data', chunk => {
+            console.log(chunk.toString('latin1'))
             if(chunk.toString('latin1').includes("Pressione ENTER para continuar")) {
                 cp.stdin.write('\n');
             }
@@ -59,6 +61,7 @@ try {
         });
 
         cp.stderr.on('data', chunk => {
+            console.log(chunk.toString('latin1'))
             const str = chunk.toString('latin1');
             if (str.startsWith('AVISO: ')) {
                 warning += str;
@@ -67,8 +70,15 @@ try {
             }
         });
         
-        cp.on('exit', resolve);
-        cp.on('error', reject);
+        cp.on('exit', ()=>{
+            console.log('aaddasdasdasndasbfshafsjafjkbjsgsgsdghhsghsghgshgshsghgsh')
+            resolve(1)
+        });
+        cp.on('error', ()=>{
+            console.log('error')
+            reject(1)
+        });
+        
     }), 4000).catch((err) => {
 
         cp.kill();
