@@ -25,8 +25,8 @@ try {
 
     const consolePath = path.resolve('./dependencies/java/portugol/portugol-console.jar');
     await fs.writeFile(tempPath, code);
-
-    const cp = spawn('C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', [
+    // 
+    const cp = spawn('java', [
         '-Dfile.encoding=latin1',
         '-server',
         '-Xms32m',
@@ -79,14 +79,14 @@ try {
             reject(1)
         });
         
-    }), 4000).catch((err) => {
+    }), 12000).catch((err) => {
 
         cp.kill();
         err = 'Timeout';
     });
     await fs.unlink(tempPath);
     if(err){
-        console.log(
+        console.log( 
             chalk.redBright(`
         Result: ${result.split('\n')[0]}
         Warning: ${warning}
@@ -114,11 +114,11 @@ try {
         }
         console.log(chalk.bgMagentaBright("Recompiling"))
         tryA++;
-        if(tryA > 3){
+        if(tryA > 1){
             return {
                 result:"",
                 warning:"",
-                err:"Compilation Error"
+                err:"Erro na compilação do programa, verifique o enunciado"
             }
         }
         return run(code, inputs);
@@ -137,7 +137,7 @@ try {
     return {
         result:"",
         warning:"",
-        err:"Compilation Error"
+        err:"Erro na compilação do programa, verifique o enunciado"
     }    
 }
 
